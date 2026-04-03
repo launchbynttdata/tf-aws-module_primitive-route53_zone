@@ -34,3 +34,13 @@ output "name" {
   description = "The name of the hosted zone."
   value       = aws_route53_zone.zone.name
 }
+
+output "primary_name_server" {
+  description = "The Route 53 name server that created the SOA record."
+  value       = aws_route53_zone.zone.primary_name_server
+}
+
+output "tags_all" {
+  description = "A map of tags assigned to the resource, including those inherited from the provider default_tags configuration block."
+  value       = aws_route53_zone.zone.tags_all
+}

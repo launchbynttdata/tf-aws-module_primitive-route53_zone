@@ -34,10 +34,11 @@ module "zone" {
 
   name = "${module.resource_names["route53_zone"].dns_compliant_minimal_random_suffix}.${var.base_domain}"
 
-  comment           = var.comment
-  tags              = var.tags
-  vpc_id            = var.vpc_id
-  vpc_region        = var.vpc_region
-  delegation_set_id = var.delegation_set_id
-  force_destroy     = var.force_destroy
+  comment                     = var.comment
+  tags                        = var.tags
+  vpc_id                      = var.vpc_id
+  vpc_region                  = var.vpc_region
+  delegation_set_id           = var.delegation_set_id
+  force_destroy               = var.force_destroy
+  enable_accelerated_recovery = var.enable_accelerated_recovery
 }

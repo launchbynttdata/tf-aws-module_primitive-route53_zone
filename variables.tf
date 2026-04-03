@@ -50,3 +50,9 @@ variable "force_destroy" {
   type        = bool
   default     = false
 }
+
+variable "enable_accelerated_recovery" {
+  description = "Whether to enable accelerated recovery for the hosted zone. Once enabled, switching to false requires explicitly specifying false rather than removing the argument."
+  type        = bool
+  default     = false
+}
