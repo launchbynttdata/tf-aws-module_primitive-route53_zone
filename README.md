@@ -61,7 +61,7 @@ pre-commit install --hook-type commit-msg
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0 |
 
 ## Providers
 
@@ -90,7 +90,6 @@ No modules.
 | <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | The VPC's region. Defaults to the region of the AWS provider. | `string` | `null` | no |
 | <a name="input_delegation_set_id"></a> [delegation\_set\_id](#input\_delegation\_set\_id) | The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with vpc\_id as delegation sets can only be used for public zones. | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Whether to destroy all records (possibly managed outside of Terraform) in the zone when destroying the zone. | `bool` | `false` | no |
-| <a name="input_enable_accelerated_recovery"></a> [enable\_accelerated\_recovery](#input\_enable\_accelerated\_recovery) | Whether to enable accelerated recovery for the hosted zone. Once enabled, switching to false requires explicitly specifying false rather than removing the argument. | `bool` | `false` | no |
 
 ## Outputs
 

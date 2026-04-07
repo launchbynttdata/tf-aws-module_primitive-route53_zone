@@ -13,11 +13,10 @@
 resource "aws_route53_zone" "zone" {
   name = var.name
 
-  comment                     = var.comment
-  tags                        = var.tags
-  force_destroy               = var.force_destroy
-  enable_accelerated_recovery = var.enable_accelerated_recovery
-  delegation_set_id           = var.vpc_id == null ? var.delegation_set_id : null
+  comment           = var.comment
+  tags              = var.tags
+  force_destroy     = var.force_destroy
+  delegation_set_id = var.vpc_id == null ? var.delegation_set_id : null
 
   dynamic "vpc" {
     for_each = var.vpc_id != null ? [1] : []
