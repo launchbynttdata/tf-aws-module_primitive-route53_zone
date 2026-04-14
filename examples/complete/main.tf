@@ -38,6 +38,7 @@ module "zone" {
   tags              = var.tags
   vpc_id            = var.vpc_id
   vpc_region        = var.vpc_region
+  vpc_associations  = var.vpc_associations
   delegation_set_id = var.delegation_set_id
   force_destroy     = var.force_destroy
 }

@@ -28,19 +28,28 @@ variable "tags" {
 }
 
 variable "vpc_id" {
-  description = "The VPC to associate with a private hosted zone. Specifying this creates a private hosted zone. Conflicts with delegation_set_id."
+  description = "Single VPC to associate with a private hosted zone (legacy). Use vpc_associations for multiple VPCs. Combined with vpc_associations when both are set. Conflicts with delegation_set_id."
   type        = string
   default     = null
 }
 
 variable "vpc_region" {
-  description = "The VPC's region. Defaults to the region of the AWS provider."
+  description = "Region for vpc_id when set. Defaults to the region of the AWS provider when null."
   type        = string
   default     = null
 }
 
+variable "vpc_associations" {
+  description = "Additional VPC associations for a private hosted zone. Resolved map key is vpc_id (list order does not matter). Duplicate vpc_id entries must use the same vpc_region; the last entry wins. Conflicts with delegation_set_id."
+  type = list(object({
+    vpc_id     = string
+    vpc_region = optional(string)
+  }))
+  default = []
+}
+
 variable "delegation_set_id" {
-  description = "The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with vpc_id as delegation sets can only be used for public zones."
+  description = "The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with any private zone VPC association (vpc_id and/or vpc_associations)."
   type        = string
   default     = null
 }

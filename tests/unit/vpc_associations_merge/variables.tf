@@ -10,13 +10,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-terraform {
-  required_version = "~> 1.10"
+variable "vpc_id" {
+  type    = string
+  default = null
+}
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.14, < 7.0"
-    }
-  }
+variable "vpc_region" {
+  type    = string
+  default = null
+}
+
+variable "vpc_associations" {
+  type = list(object({
+    vpc_id     = string
+    vpc_region = optional(string)
+  }))
+  default = []
 }
