@@ -1,42 +1,4 @@
-# Route53 Zone Complete Example
-
-This example creates an AWS Route53 hosted zone using the primitive module with resource naming.
-
-## Usage
-
-```hcl
-data "aws_region" "current" {}
-
-module "resource_names" {
-  source   = "terraform.registry.launch.nttdata.com/module_library/resource_name/launch"
-  version  = "~> 2.0"
-
-  for_each = var.resource_names_map
-
-  logical_product_family  = var.logical_product_family
-  logical_product_service = var.logical_product_service
-  class_env               = var.class_env
-  instance_env            = var.instance_env
-  instance_resource       = var.instance_resource
-  cloud_resource_type     = each.value.name
-  maximum_length          = each.value.max_length
-
-  region = join("", split("-", data.aws_region.current.name))
-}
-
-module "zone" {
-  source = "../.."
-
-  name = "${module.resource_names["route53_zone"].dns_compliant_minimal_random_suffix}.${var.base_domain}"
-
-  comment            = var.comment
-  tags               = var.tags
-  vpc_id             = var.vpc_id
-  vpc_region         = var.vpc_region
-  delegation_set_id  = var.delegation_set_id
-  force_destroy      = var.force_destroy
-}
-```
+# min_provider
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -44,13 +6,13 @@ module "zone" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.39.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
 
 ## Modules
 

@@ -60,14 +60,14 @@ pre-commit install --hook-type commit-msg
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.39.0 |
 
 ## Modules
 
@@ -100,6 +100,8 @@ No modules.
 | <a name="output_name_servers"></a> [name\_servers](#output\_name\_servers) | A list of name servers in the associated (or default) delegation set. |
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the hosted zone. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the hosted zone. |
+| <a name="output_primary_name_server"></a> [primary\_name\_server](#output\_primary\_name\_server) | The Route 53 name server that created the SOA record. |
+| <a name="output_tags_all"></a> [tags\_all](#output\_tags\_all) | A map of tags assigned to the resource, including those inherited from the provider default\_tags configuration block. |
 <!-- END_TF_DOCS -->
 
 <!-- BEGIN_TF_DOCS -->
