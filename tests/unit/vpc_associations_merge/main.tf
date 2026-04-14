@@ -10,8 +10,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Keep locals and check in sync with the root module locals.tf (see comments there).
-// No providers: this harness only exercises merge and validation logic.
+// Keep locals and validation in sync with the root module locals.tf and main.tf preconditions.
+// No AWS provider: provider_default_region simulates data.aws_region.current.name.
 
 locals {
   all_vpc_associations = concat(
@@ -23,7 +23,9 @@ locals {
 
   vpc_association_region_conflict = length(local.all_vpc_associations) > 0 && anytrue([
     for _, items in local.associations_grouped :
-    length(distinct([for i in items : try(i.vpc_region, null)])) > 1
+    length(distinct([
+      for i in items : coalesce(try(i.vpc_region, null), var.provider_default_region)
+    ])) > 1
   ])
 
   vpc_associations_by_id = {
@@ -32,9 +34,11 @@ locals {
   }
 }
 
-check "vpc_association_regions_consistent" {
-  assert {
-    condition     = !local.vpc_association_region_conflict
-    error_message = "Each vpc_id must map to a single vpc_region across vpc_id, vpc_region, and vpc_associations (null counts as provider default region)."
+resource "terraform_data" "vpc_association_validation" {
+  lifecycle {
+    precondition {
+      condition     = !local.vpc_association_region_conflict
+      error_message = "Each vpc_id must map to a single effective vpc_region across vpc_id, vpc_region, and vpc_associations. Null vpc_region is treated as the configured AWS provider region (${var.provider_default_region})."
+    }
   }
 }

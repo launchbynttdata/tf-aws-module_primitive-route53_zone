@@ -80,7 +80,7 @@ run "vpc_region_conflict_in_list" {
   }
 
   expect_failures = [
-    check.vpc_association_regions_consistent,
+    terraform_data.vpc_association_validation,
   ]
 }
 
@@ -96,6 +96,23 @@ run "legacy_conflicts_with_association_region" {
   }
 
   expect_failures = [
-    check.vpc_association_regions_consistent,
+    terraform_data.vpc_association_validation,
   ]
+}
+
+run "null_and_explicit_same_provider_region_no_conflict" {
+  command = plan
+
+  variables {
+    provider_default_region = "us-east-1"
+    vpc_associations = [
+      { vpc_id = "vpc-mixedregion00001", vpc_region = null },
+      { vpc_id = "vpc-mixedregion00001", vpc_region = "us-east-1" },
+    ]
+  }
+
+  assert {
+    condition     = output.associations_canonical_json == "{\"vpc-mixedregion00001\":{\"vpc_id\":\"vpc-mixedregion00001\",\"vpc_region\":\"us-east-1\"}}"
+    error_message = "null_and_explicit_same_provider_region_no_conflict: canonical json mismatch"
+  }
 }

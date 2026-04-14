@@ -9,7 +9,9 @@
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
@@ -17,7 +19,9 @@ No modules.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [terraform_data.vpc_association_validation](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 
 ## Inputs
 
@@ -26,6 +30,7 @@ No resources.
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | `null` | no |
 | <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | n/a | `string` | `null` | no |
 | <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | n/a | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_provider_default_region"></a> [provider\_default\_region](#input\_provider\_default\_region) | Region used when coalescing null vpc\_region in this harness (mirrors data.aws\_region.current.name in the root module). | `string` | `"us-east-1"` | no |
 
 ## Outputs
 

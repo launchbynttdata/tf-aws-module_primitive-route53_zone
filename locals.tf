@@ -11,7 +11,8 @@
 // limitations under the License.
 
 // Merge order: legacy vpc_id first, then vpc_associations. Duplicate vpc_id uses the last
-// occurrence for the resolved map; conflicting vpc_region values for the same vpc_id fail the check below.
+// occurrence for the resolved map; conflicting effective vpc_region values for the same vpc_id
+// fail the lifecycle precondition on aws_route53_zone.zone (null vpc_region counts as data.aws_region.current.name).
 
 locals {
   all_vpc_associations = concat(
@@ -23,19 +24,14 @@ locals {
 
   vpc_association_region_conflict = length(local.all_vpc_associations) > 0 && anytrue([
     for _, items in local.associations_grouped :
-    length(distinct([for i in items : try(i.vpc_region, null)])) > 1
+    length(distinct([
+      for i in items : coalesce(try(i.vpc_region, null), data.aws_region.current.name)
+    ])) > 1
   ])
 
   # Last occurrence in concat order wins when the same vpc_id appears more than once.
   vpc_associations_by_id = {
     for vpc_id, items in local.associations_grouped :
     vpc_id => items[length(items) - 1]
-  }
-}
-
-check "vpc_association_regions_consistent" {
-  assert {
-    condition     = !local.vpc_association_region_conflict
-    error_message = "Each vpc_id must map to a single vpc_region across vpc_id, vpc_region, and vpc_associations (null counts as provider default region)."
   }
 }

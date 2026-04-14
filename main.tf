@@ -31,5 +31,10 @@ resource "aws_route53_zone" "zone" {
       condition     = length(local.vpc_associations_by_id) == 0 || var.delegation_set_id == null
       error_message = "Private zone VPC associations (vpc_id and/or vpc_associations) cannot be combined with delegation_set_id. Use VPC associations for private zones and delegation_set_id for public zones."
     }
+
+    precondition {
+      condition     = !local.vpc_association_region_conflict
+      error_message = "Each vpc_id must map to a single effective vpc_region across vpc_id, vpc_region, and vpc_associations. Null vpc_region is treated as the configured AWS provider region (${data.aws_region.current.name})."
+    }
   }
 }
