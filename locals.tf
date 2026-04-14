@@ -34,4 +34,15 @@ locals {
     for vpc_id, items in local.associations_grouped :
     vpc_id => items[length(items) - 1]
   }
+
+  # Legacy-only private zone: keep nested dynamic "vpc" instance key "0" to match older
+  # releases (for_each was a single-element list). Otherwise key by vpc_id for stable addresses.
+  legacy_single_vpc_association_only = var.vpc_id != null && length(var.vpc_associations) == 0
+
+  vpc_block_for_each = local.legacy_single_vpc_association_only ? {
+    "0" = {
+      vpc_id     = var.vpc_id
+      vpc_region = var.vpc_region
+    }
+  } : local.vpc_associations_by_id
 }

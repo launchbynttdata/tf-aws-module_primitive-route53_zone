@@ -40,7 +40,7 @@ variable "vpc_region" {
 }
 
 variable "vpc_associations" {
-  description = "Additional VPC associations for a private hosted zone. Resolved map key is vpc_id (list order does not matter). Duplicate vpc_id entries must use the same vpc_region; the last entry wins. Conflicts with delegation_set_id."
+  description = "VPC associations for a private hosted zone. When vpc_id is also set, entries are merged after the legacy vpc_id (same vpc_id: last occurrence wins). Resolved map key is vpc_id (list order does not matter). Duplicate vpc_id entries must use the same vpc_region; the last entry wins. Conflicts with delegation_set_id."
   type = list(object({
     vpc_id     = string
     vpc_region = optional(string)

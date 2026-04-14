@@ -45,7 +45,7 @@ module "zone" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.14, < 7.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 

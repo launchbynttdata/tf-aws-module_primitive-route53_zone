@@ -1,5 +1,7 @@
 # vpc_associations_merge
 
+Provider-free `terraform test` harness. It asserts **`vpc_associations_by_id` merge order**, duplicate `vpc_id` resolution, and **region conflict** rules (mirroring [`locals.tf`](../../locals.tf) and the root module preconditions). It does **not** exercise the Route53 resource: the **`dynamic "vpc"` `for_each` instance key** strategy (`vpc["0"]` when legacy-only vs keys by `vpc_id` when `vpc_associations` is non-empty) lives in the root [`locals.tf`](../../locals.tf) and [`main.tf`](../../main.tf). When changing either behavior, update this directory in the same change.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

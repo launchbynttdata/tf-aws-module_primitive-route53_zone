@@ -12,6 +12,8 @@
 
 // Keep locals and validation in sync with the root module locals.tf and main.tf preconditions.
 // No AWS provider: provider_default_region simulates data.aws_region.current.name.
+// Scope: merge and region rules only. Root module vpc_block_for_each (legacy key "0" vs vpc_id keys)
+// is not duplicated here; change both when that contract changes.
 
 locals {
   all_vpc_associations = concat(

@@ -19,7 +19,7 @@ resource "aws_route53_zone" "zone" {
   delegation_set_id = length(local.vpc_associations_by_id) == 0 ? var.delegation_set_id : null
 
   dynamic "vpc" {
-    for_each = local.vpc_associations_by_id
+    for_each = local.vpc_block_for_each
     content {
       vpc_id     = vpc.value.vpc_id
       vpc_region = vpc.value.vpc_region

@@ -9,11 +9,11 @@ This Terraform module creates an AWS Route53 hosted zone. It wraps the `aws_rout
 
 ### Upgrade impact: private zone VPC nested blocks
 
-If you used an **older** release of this module with **`vpc_id`** set (private hosted zone), the implementation used a `dynamic "vpc"` block whose **`for_each` instance key was a fixed placeholder** (not your VPC ID). Current releases use **`for_each` keyed by `vpc_id`** (and merge `vpc_id` / `vpc_region` with `vpc_associations`) so list order does not drive replacement and multiple VPCs are supported.
+Older releases used a `dynamic "vpc"` block with a **placeholder instance key** (`"0"`) when only **`vpc_id`** was set. This module keeps that address when **`vpc_id` is set and `vpc_associations` is empty**, so upgrades for that common case should **not** show nested `vpc` destroy/create churn from Terraform addressing alone.
 
-**What this means in Terraform state:** the **address shape** of nested `vpc` blocks on `aws_route53_zone.zone` changes at upgrade (for example, from a numeric instance key to a string key matching the VPC ID). A plain upgrade can produce a plan that **adds and removes** nested `vpc` associations even when the underlying VPC linkage is unchanged. That is a Terraform addressing change, not necessarily a new VPC association in AWS.
+When **`vpc_associations` is non-empty**, nested blocks use **`for_each` keys equal to `vpc_id`** (merged with legacy `vpc_id` / `vpc_region` when both are set). If you previously had only **`vpc_id`** in state under `vpc["0"]` and you start passing **`vpc_associations`**, expect a **one-time** nested address change (`"0"` to your VPC ID string). Review `terraform plan` carefully. You can use a **`moved` block** in the **root** configuration with **literal** addresses (for example from `module.zone.aws_route53_zone.zone.vpc["0"]` to `module.zone.aws_route53_zone.zone.vpc["vpc-0123456789abcdef0"]`) if your module label and VPC ID are fixed for that workspace.
 
-**What you should do:** review `terraform plan` carefully when bumping the module on existing private zones. If you need to avoid churn, consider a **`moved` block** (Terraform 1.1+) from the old nested instance address to the new one, or follow your org process for state moves. **Public zones** (no VPC arguments) are unaffected. Callers who only set **`vpc_id`** (single VPC) remain supported; **`vpc_associations`** is additive for multiple VPCs.
+**Validation:** conflicting `vpc_region` values for the same `vpc_id` are rejected by **`lifecycle` preconditions** on `aws_route53_zone.zone` (plan fails; not a `check` block). **Public zones** (no VPC arguments) are unaffected.
 
 ## Usage
 
@@ -75,7 +75,7 @@ pre-commit install --hook-type commit-msg
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.14, < 7.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 
@@ -103,7 +103,7 @@ No modules.
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to assign to the hosted zone. | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Single VPC to associate with a private hosted zone (legacy). Use vpc\_associations for multiple VPCs. Combined with vpc\_associations when both are set. Conflicts with delegation\_set\_id. | `string` | `null` | no |
 | <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | Region for vpc\_id when set. Defaults to the region of the AWS provider when null. | `string` | `null` | no |
-| <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | Additional VPC associations for a private hosted zone. Resolved map key is vpc\_id (list order does not matter). Duplicate vpc\_id entries must use the same vpc\_region; the last entry wins. Conflicts with delegation\_set\_id. | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | VPC associations for a private hosted zone. When vpc\_id is also set, entries are merged after the legacy vpc\_id (same vpc\_id: last occurrence wins). Resolved map key is vpc\_id (list order does not matter). Duplicate vpc\_id entries must use the same vpc\_region; the last entry wins. Conflicts with delegation\_set\_id. | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_delegation_set_id"></a> [delegation\_set\_id](#input\_delegation\_set\_id) | The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with any private zone VPC association (vpc\_id and/or vpc\_associations). | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Whether to destroy all records (possibly managed outside of Terraform) in the zone when destroying the zone. | `bool` | `false` | no |
 
@@ -126,7 +126,7 @@ No modules.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.14, < 7.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 
