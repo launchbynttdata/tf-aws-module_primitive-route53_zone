@@ -42,7 +42,16 @@ JOB_NAME ?= job
 JOB_EMAIL ?= job@job.job
 
 COMPONENTS_DIR = components
+
+.PHONY: terraform-test
+terraform-test:
+	@set -e; \
+	cd tests/unit/vpc_associations_merge && terraform init -backend=false -input=false && terraform test
+
 -include $(COMPONENTS_DIR)/Makefile
+
+# Extend platform `check` (from components/Makefile when present) to run first.
+check: terraform-test
 
 MODULE_DIR ?= ${COMPONENTS_DIR}/module
 

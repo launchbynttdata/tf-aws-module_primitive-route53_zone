@@ -10,13 +10,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-terraform {
-  required_version = "~> 1.10"
+output "sorted_association_vpc_ids" {
+  value = sort(keys(local.vpc_associations_by_id))
+}
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.14, < 7.0"
+output "associations_canonical_json" {
+  value = jsonencode({
+    for k in sort(keys(local.vpc_associations_by_id)) : k => {
+      vpc_id     = local.vpc_associations_by_id[k].vpc_id
+      vpc_region = try(local.vpc_associations_by_id[k].vpc_region, null)
     }
-  }
+  })
 }

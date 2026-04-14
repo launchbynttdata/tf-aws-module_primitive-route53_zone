@@ -21,7 +21,7 @@ module "resource_names" {
   cloud_resource_type     = each.value.name
   maximum_length          = each.value.max_length
 
-  region = join("", split("-", data.aws_region.current.name))
+  region = join("", split("-", data.aws_region.current.id))
 }
 
 module "zone" {
@@ -33,6 +33,7 @@ module "zone" {
   tags               = var.tags
   vpc_id             = var.vpc_id
   vpc_region         = var.vpc_region
+  vpc_associations   = var.vpc_associations
   delegation_set_id  = var.delegation_set_id
   force_destroy      = var.force_destroy
 }
@@ -43,14 +44,14 @@ module "zone" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.14, < 7.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.39.0 |
 
 ## Modules
 
@@ -78,9 +79,10 @@ module "zone" {
 | <a name="input_base_domain"></a> [base\_domain](#input\_base\_domain) | Base domain for the hosted zone (e.g., launch.nttdata.com). Must be a domain you own. | `string` | n/a | yes |
 | <a name="input_comment"></a> [comment](#input\_comment) | A comment for the hosted zone. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to assign to the hosted zone. | `map(string)` | `{}` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC to associate with a private hosted zone. Conflicts with delegation\_set\_id. | `string` | `null` | no |
-| <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | The VPC's region. Defaults to the region of the AWS provider. | `string` | `null` | no |
-| <a name="input_delegation_set_id"></a> [delegation\_set\_id](#input\_delegation\_set\_id) | The ID of the reusable delegation set. Conflicts with vpc\_id. | `string` | `null` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Single VPC for a private hosted zone (legacy). Conflicts with delegation\_set\_id. | `string` | `null` | no |
+| <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | Region for vpc\_id when set. Defaults to the region of the AWS provider when null. | `string` | `null` | no |
+| <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | VPC associations for a private hosted zone (order-independent). Conflicts with delegation\_set\_id. | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_delegation_set_id"></a> [delegation\_set\_id](#input\_delegation\_set\_id) | The ID of the reusable delegation set. Conflicts with vpc\_id and vpc\_associations. | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Whether to destroy all records in the zone when destroying the zone. | `bool` | `false` | no |
 
 ## Outputs

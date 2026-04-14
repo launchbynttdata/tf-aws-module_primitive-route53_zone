@@ -26,7 +26,7 @@ module "resource_names" {
   cloud_resource_type     = each.value.name
   maximum_length          = each.value.max_length
 
-  region = join("", split("-", data.aws_region.current.name))
+  region = join("", split("-", data.aws_region.current.id))
 }
 
 module "zone" {
@@ -38,6 +38,7 @@ module "zone" {
   tags              = var.tags
   vpc_id            = var.vpc_id
   vpc_region        = var.vpc_region
+  vpc_associations  = var.vpc_associations
   delegation_set_id = var.delegation_set_id
   force_destroy     = var.force_destroy
 }
