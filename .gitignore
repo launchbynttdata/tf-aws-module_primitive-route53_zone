@@ -58,6 +58,7 @@ terraform.rc
 azure_env.sh
 .releaserc.json
 .tflint.hcl
+!tests/unit/*/.tflint.hcl
 
 # Pre-commit hook
 .pre-commit-config.yaml
