@@ -16,20 +16,25 @@ resource "aws_route53_zone" "zone" {
   comment           = var.comment
   tags              = var.tags
   force_destroy     = var.force_destroy
-  delegation_set_id = var.vpc_id == null ? var.delegation_set_id : null
+  delegation_set_id = length(local.vpc_associations_by_id) == 0 ? var.delegation_set_id : null
 
   dynamic "vpc" {
-    for_each = var.vpc_id != null ? [1] : []
+    for_each = local.vpc_block_for_each
     content {
-      vpc_id     = var.vpc_id
-      vpc_region = var.vpc_region
+      vpc_id     = vpc.value.vpc_id
+      vpc_region = vpc.value.vpc_region
     }
   }
 
   lifecycle {
     precondition {
-      condition     = var.vpc_id == null || var.delegation_set_id == null
-      error_message = "vpc_id and delegation_set_id cannot both be set. Use vpc_id for private zones and delegation_set_id for public zones."
+      condition     = length(local.vpc_associations_by_id) == 0 || var.delegation_set_id == null
+      error_message = "Private zone VPC associations (vpc_id and/or vpc_associations) cannot be combined with delegation_set_id. Use VPC associations for private zones and delegation_set_id for public zones."
+    }
+
+    precondition {
+      condition     = !local.vpc_association_region_conflict
+      error_message = "Each vpc_id must map to a single effective vpc_region across vpc_id, vpc_region, and vpc_associations. Null vpc_region is treated as the configured AWS provider region (${data.aws_region.current.name})."
     }
   }
 }

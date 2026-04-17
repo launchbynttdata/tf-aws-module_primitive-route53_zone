@@ -72,19 +72,28 @@ variable "tags" {
 }
 
 variable "vpc_id" {
-  description = "The VPC to associate with a private hosted zone. Conflicts with delegation_set_id."
+  description = "Single VPC for a private hosted zone (legacy). Conflicts with delegation_set_id."
   type        = string
   default     = null
 }
 
 variable "vpc_region" {
-  description = "The VPC's region. Defaults to the region of the AWS provider."
+  description = "Region for vpc_id when set. Defaults to the region of the AWS provider when null."
   type        = string
   default     = null
 }
 
+variable "vpc_associations" {
+  description = "VPC associations for a private hosted zone (order-independent). Conflicts with delegation_set_id."
+  type = list(object({
+    vpc_id     = string
+    vpc_region = optional(string)
+  }))
+  default = []
+}
+
 variable "delegation_set_id" {
-  description = "The ID of the reusable delegation set. Conflicts with vpc_id."
+  description = "The ID of the reusable delegation set. Conflicts with vpc_id and vpc_associations."
   type        = string
   default     = null
 }
