@@ -78,7 +78,7 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 	require.True(t, found, "created A record should exist in zone")
 }
 
-func TestComposableCompleteReadonly(t *testing.T, ctx types.TestContext) {
+func TestComposableCompleteReadOnly(t *testing.T, ctx types.TestContext) {
 	opts := ctx.TerratestTerraformOptions()
 	zoneID := terraform.Output(t, opts, "zone_id")
 	zoneName := terraform.Output(t, opts, "name")
