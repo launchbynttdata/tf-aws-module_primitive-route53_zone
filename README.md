@@ -77,12 +77,6 @@ pre-commit install --hook-type commit-msg
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.10 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.39.0 |
-
 ## Modules
 
 No modules.
@@ -98,26 +92,26 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | The name of the hosted zone (domain name). | `string` | n/a | yes |
 | <a name="input_comment"></a> [comment](#input\_comment) | A comment for the hosted zone. Defaults to 'Managed by Terraform' when null. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to assign to the hosted zone. | `map(string)` | `{}` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Single VPC to associate with a private hosted zone (legacy). Use vpc\_associations for multiple VPCs. Combined with vpc\_associations when both are set. Conflicts with delegation\_set\_id. | `string` | `null` | no |
-| <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | Region for vpc\_id when set. Defaults to the region of the AWS provider when null. | `string` | `null` | no |
-| <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | VPC associations for a private hosted zone. When vpc\_id is also set, entries are merged after the legacy vpc\_id (same vpc\_id: last occurrence wins). Resolved map key is vpc\_id (list order does not matter). Duplicate vpc\_id entries must use the same vpc\_region; the last entry wins. Conflicts with delegation\_set\_id. | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_delegation_set_id"></a> [delegation\_set\_id](#input\_delegation\_set\_id) | The ID of the reusable delegation set whose NS records you want to assign to the hosted zone. Conflicts with any private zone VPC association (vpc\_id and/or vpc\_associations). | `string` | `null` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Whether to destroy all records (possibly managed outside of Terraform) in the zone when destroying the zone. | `bool` | `false` | no |
+| <a name="input_name"></a> [name](#input\_name) | The name of the hosted zone (domain name). | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to assign to the hosted zone. | `map(string)` | `{}` | no |
+| <a name="input_vpc_associations"></a> [vpc\_associations](#input\_vpc\_associations) | VPC associations for a private hosted zone. When vpc\_id is also set, entries are merged after the legacy vpc\_id (same vpc\_id: last occurrence wins). Resolved map key is vpc\_id (list order does not matter). Duplicate vpc\_id entries must use the same vpc\_region; the last entry wins. Conflicts with delegation\_set\_id. | <pre>list(object({<br/>    vpc_id     = string<br/>    vpc_region = optional(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Single VPC to associate with a private hosted zone (legacy). Use vpc\_associations for multiple VPCs. Combined with vpc\_associations when both are set. Conflicts with delegation\_set\_id. | `string` | `null` | no |
+| <a name="input_vpc_region"></a> [vpc\_region](#input\_vpc\_region) | Region for vpc\_id when set. Defaults to the region of the AWS provider when null. | `string` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_id"></a> [id](#output\_id) | The ID of the resource (same as the zone\_id). |
-| <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | The Hosted Zone ID. This can be referenced by zone records. |
-| <a name="output_name_servers"></a> [name\_servers](#output\_name\_servers) | A list of name servers in the associated (or default) delegation set. |
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the hosted zone. |
+| <a name="output_id"></a> [id](#output\_id) | The ID of the resource (same as the zone\_id). |
 | <a name="output_name"></a> [name](#output\_name) | The name of the hosted zone. |
+| <a name="output_name_servers"></a> [name\_servers](#output\_name\_servers) | A list of name servers in the associated (or default) delegation set. |
 | <a name="output_primary_name_server"></a> [primary\_name\_server](#output\_primary\_name\_server) | The Route 53 name server that created the SOA record. |
 | <a name="output_tags_all"></a> [tags\_all](#output\_tags\_all) | A map of tags assigned to the resource, including those inherited from the provider default\_tags configuration block. |
+| <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | The Hosted Zone ID. This can be referenced by zone records. |
 <!-- END_TF_DOCS -->
 
 <!-- BEGIN_TF_DOCS -->
