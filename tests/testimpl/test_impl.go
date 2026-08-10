@@ -17,10 +17,10 @@ import (
 
 func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 	opts := ctx.TerratestTerraformOptions()
-	zoneID := terraform.Output(t, opts, "zone_id")
-	zoneName := terraform.Output(t, opts, "name")
-	zoneARN := terraform.Output(t, opts, "id")
-	nameServers := terraform.OutputList(t, opts, "name_servers")
+	zoneID := terraform.OutputContext(t, context.Background(), opts, "zone_id")
+	zoneName := terraform.OutputContext(t, context.Background(), opts, "name")
+	zoneARN := terraform.OutputContext(t, context.Background(), opts, "id")
+	nameServers := terraform.OutputListContext(t, context.Background(), opts, "name_servers")
 
 	assert.Equal(t, zoneID, zoneARN, "id should equal zone_id for Route53 hosted zones")
 	require.NotEmpty(t, zoneName, "zone name should be set")
@@ -80,12 +80,12 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 
 func TestComposableCompleteReadOnly(t *testing.T, ctx types.TestContext) {
 	opts := ctx.TerratestTerraformOptions()
-	zoneID := terraform.Output(t, opts, "zone_id")
-	zoneName := terraform.Output(t, opts, "name")
-	zoneARN := terraform.Output(t, opts, "arn")
-	nameServers := terraform.OutputList(t, opts, "name_servers")
+	zoneID := terraform.OutputContext(t, context.Background(), opts, "zone_id")
+	zoneName := terraform.OutputContext(t, context.Background(), opts, "name")
+	zoneARN := terraform.OutputContext(t, context.Background(), opts, "arn")
+	nameServers := terraform.OutputListContext(t, context.Background(), opts, "name_servers")
 
-	assert.Equal(t, zoneID, terraform.Output(t, opts, "id"), "id should equal zone_id")
+	assert.Equal(t, zoneID, terraform.OutputContext(t, context.Background(), opts, "id"), "id should equal zone_id")
 	require.NotEmpty(t, zoneName, "zone name should be set")
 	require.Len(t, nameServers, 4, "Route53 zones have 4 name servers")
 	require.NotEmpty(t, zoneARN, "zone ARN should be set")
